@@ -21,6 +21,12 @@ body {
   margin: 50px auto;
   border-radius: 10px;
   max-width: 1400px;
+
+  @media (max-width: 645px) {
+    grid-template-columns: repeat(1, 1fr);
+    width: calc(100vw - 30px);
+    margin-top: 20px;
+  }
 }
 
 .content {
@@ -28,18 +34,69 @@ body {
 
   &__title {
     margin: 35px 0;
+    font-size: 36px;
+    font-weight: 800;
+    margin-top: 60px;
+    margin-bottom: 60px;
   }
 
   &__items {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 11px;
+    grid-row-gap: 20px;
+
+    @media (max-width: 1440px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 1060px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 731px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
   }
 
   &__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    @media (max-width: 1260px) {
+      grid-template-columns: repeat(1, 1fr);
+
+      .categories {
+        width: 100%;
+        overflow: auto;
+
+        ul {
+          width: 785px;
+        }
+      }
+      .sort {
+        margin-left: 20px;
+        b {
+          display: none;
+        }
+      }
+    }
+    @media (max-width: 780px) {
+      .categories {
+        margin-top: 20px;
+      }
+      flex-direction: column-reverse;
+    }
+    @media (max-width: 760px) {
+      .categories {
+        ul {
+          li {
+            padding: 8px 20px;
+          }
+        }
+      }
+      flex-direction: column-reverse;
+    }
   }
 }
 
@@ -61,12 +118,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 30px;
   }
 
   .content__title {
     display: flex;
     align-items: center;
-    font-size: 32px;
 
     svg {
       position: relative;
@@ -81,6 +138,9 @@ body {
     }
   }
 
+  .content__items {
+    display: block;
+  }
   &__clear {
     display: flex;
     align-items: center;
