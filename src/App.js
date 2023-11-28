@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './scss/components/app.scss';
 import Header from './components/Header';
 import Home from './components/pages/Home';
 
-// import pizzas from './assets/pizzas.json';
-
 function App() {
+  const [searchValue, setSearchValue] = useState('');
+
   return (
     <div className="wrapper">
-      <Header />
+      <Header searchValue={searchValue} setSearchValue={setSearchValue} />
       <div className="content">
-        <Home />
+        <Home searchValue={searchValue} />
       </div>
     </div>
   );

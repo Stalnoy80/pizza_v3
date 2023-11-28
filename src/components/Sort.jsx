@@ -4,9 +4,12 @@ const Sort = ({ value, onChangeSort }) => {
   const [open, setOpen] = useState(false);
 
   const list = [
-    { name: 'популярности', sortProperty: 'rating' },
-    { name: 'цене', sortProperty: 'price' },
-    { name: 'алфавиту', sortProperty: 'title' },
+    { name: 'популярности(-)', sortProperty: '-rating' },
+    { name: 'популярности(+)', sortProperty: 'rating' },
+    { name: 'цене(-)', sortProperty: '-price' },
+    { name: 'цене(+)', sortProperty: 'price' },
+    { name: 'алфавиту(-)', sortProperty: '-title' },
+    { name: 'алфавиту(+)', sortProperty: 'title' },
   ];
 
   const onClickSelectedItem = (i) => {

@@ -3,8 +3,6 @@ import React from 'react';
 import styles from './NotFoundBlock.module.scss';
 import Header from '../Header';
 
-console.log(styles);
-
 const NotFoundBlock = () => {
   return (
     <div className="wrapper">
