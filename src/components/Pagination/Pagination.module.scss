@@ -1,18 +1,20 @@
 .root {
   li {
-    display: inline-flex;
+    display: inline-block;
 
     a {
-      color: #fe5f1e;
+      text-align: center;
       justify-content: center;
-      align-items: center;
       width: 45px;
       height: 45px;
       padding: 10px;
       border: 1px solid #fe5f1e;
       border-radius: 30px;
-      margin-left: 10px;
+      margin-right: 10px;
       cursor: pointer;
+      display: inline-block;
+
+      color: #fe5f1e;
 
       &:hover {
         background-color: #fe5f1e;
