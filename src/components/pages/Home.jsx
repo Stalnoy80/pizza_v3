@@ -1,24 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { createContext } from 'react';
 import PizzaBlock from '../PizzaBlock/';
 import Sceleton from '../PizzaBlock/Sceleton';
 import Categories from '../Categories';
 import Sort from '../Sort';
 import Pagination from '../Pagination';
 import { SearchContext } from '../../App';
+import { useSelector, useDispatch } from 'react-redux';
+import { setCategoryId } from '../../redux/slices/filterSlice';
 
 const Home = () => {
   const { searchValue } = useContext(SearchContext);
-
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-
   const [isLoading, setIsLoading] = useState(true);
 
-  const [categoryId, setCategoryId] = useState(0);
-  const [sortType, setSortType] = useState({ name: 'популярности', sortProperty: 'rating' });
+  const { categoryId, sort } = useSelector((state) => state.filter);
 
-  const sortBy = sortType.sortProperty;
+  const dispatch = useDispatch();
+
+  const onChangeCategory = (i) => {
+    dispatch(setCategoryId(i));
+  };
+
+  const sortBy = sort.sortProperty;
   const category = categoryId > 0 ? `category=${categoryId}` : '';
   const search = searchValue ? `&title=*${searchValue}*` : '';
 
@@ -43,8 +47,8 @@ const Home = () => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories value={categoryId} onChangeCategory={(i) => setCategoryId(i)} />
-        <Sort value={sortType} onChangeSort={(i) => setSortType(i)} />
+        <Categories value={categoryId} onChangeCategory={(i) => onChangeCategory(i)} />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? sceletons : pizzas}</div>
@@ -52,5 +56,4 @@ const Home = () => {
     </div>
   );
 };
-export const PizzaContext = createContext('111');
 export default Home;

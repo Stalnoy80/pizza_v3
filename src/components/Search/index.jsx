@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styles from './Search.module.scss';
+import { useContext } from 'react';
 import { SearchContext } from '../../App';
 
 const Search = () => {
