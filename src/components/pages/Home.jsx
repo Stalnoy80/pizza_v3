@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import qs from 'qs';
 import PizzaBlock from '../PizzaBlock/';
 import Sceleton from '../PizzaBlock/Sceleton';
 import Categories from '../Categories';
@@ -6,10 +7,12 @@ import Sort from '../Sort';
 import Pagination from '../Pagination';
 import { SearchContext } from '../../App';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId, setCurrentPage } from '../../redux/slices/filterSlice';
+import { setCategoryId, setCurrentPage, setFilters } from '../../redux/slices/filterSlice';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   const { searchValue } = useContext(SearchContext);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +39,17 @@ const Home = () => {
   const sceletons = [...new Array(6)].map((_, index) => <Sceleton key={index} />); //генерация фэйкового массива пицц
 
   useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+      dispatch(
+        setFilters({
+          ...params,
+        }),
+      );
+    }
+  }, []);
+
+  useEffect(() => {
     setIsLoading(true);
 
     axios
@@ -48,6 +62,16 @@ const Home = () => {
       });
 
     window.scrollTo(0, 0);
+  }, [category, sortBy, search, currentPage]);
+
+  useEffect(() => {
+    const queryString = qs.stringify({
+      sort: sort.sortProperty,
+      categoryId,
+      currentPage,
+    });
+
+    navigate(`?${queryString}`);
   }, [category, sortBy, search, currentPage]);
 
   return (
