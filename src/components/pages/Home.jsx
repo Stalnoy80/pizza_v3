@@ -6,20 +6,24 @@ import Sort from '../Sort';
 import Pagination from '../Pagination';
 import { SearchContext } from '../../App';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId } from '../../redux/slices/filterSlice';
+import { setCategoryId, setCurrentPage } from '../../redux/slices/filterSlice';
+import axios from 'axios';
 
 const Home = () => {
   const { searchValue } = useContext(SearchContext);
   const [items, setItems] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { categoryId, sort } = useSelector((state) => state.filter);
+  const { categoryId, sort, currentPage } = useSelector((state) => state.filter);
 
   const dispatch = useDispatch();
 
   const onChangeCategory = (i) => {
     dispatch(setCategoryId(i));
+  };
+
+  const onChangePage = (number) => {
+    dispatch(setCurrentPage(number));
   };
 
   const sortBy = sort.sortProperty;
@@ -33,14 +37,16 @@ const Home = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(
-      `https://813cecfc1deed960.mokky.dev/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}`,
-    )
-      .then((res) => res.json())
-      .then((arr) => {
-        setItems(arr.items);
+
+    axios
+      .get(
+        `https://813cecfc1deed960.mokky.dev/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}`,
+      )
+      .then((res) => {
+        setItems(res.data.items);
         setIsLoading(false);
       });
+
     window.scrollTo(0, 0);
   }, [category, sortBy, search, currentPage]);
 
@@ -52,7 +58,7 @@ const Home = () => {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? sceletons : pizzas}</div>
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination onChangePage={onChangePage} currentPage={currentPage} />
     </div>
   );
 };
