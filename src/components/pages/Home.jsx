@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import qs from 'qs';
 import PizzaBlock from '../PizzaBlock/';
 import Sceleton from '../PizzaBlock/Sceleton';
@@ -7,36 +7,35 @@ import Sort, { list } from '../Sort';
 import Pagination from '../Pagination';
 import { SearchContext } from '../../App';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId, setCurrentPage, setFilters } from '../../redux/slices/filterSlice';
-import axios from 'axios';
+import {
+  selectFilter,
+  setCategoryId,
+  setCurrentPage,
+  setFilters,
+} from '../../redux/slices/filterSlice';
 import { useNavigate } from 'react-router-dom';
+import { fetchPizzas, selectPizzaData } from '../../redux/slices/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
   const { searchValue } = useContext(SearchContext);
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const isMounted = useRef(false);
 
-  const { categoryId, sort, currentPage } = useSelector((state) => state.filter);
+  const { categoryId, sort, currentPage } = useSelector(selectFilter);
+  const { items, status } = useSelector(selectPizzaData);
 
   const dispatch = useDispatch();
 
-  const onChangeCategory = (i) => {
-    dispatch(setCategoryId(i));
-  };
-
-  const onChangePage = (number) => {
-    dispatch(setCurrentPage(number));
-  };
+  const isSearch = useRef(false);
 
   const sortBy = sort.sortProperty;
   const category = categoryId > 0 ? `category=${categoryId}` : '';
   const search = searchValue ? `&title=*${searchValue}*` : '';
 
-  const pizzas = items
-    // .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase())) //фильтрация статики
-    .map((obj, i) => <PizzaBlock {...obj} key={i} />);
-  const sceletons = [...new Array(6)].map((_, index) => <Sceleton key={index} />); //генерация фэйкового массива пицц
+  const getPizzas = async () => {
+    dispatch(fetchPizzas({ sortBy, category, search, currentPage }));
+    window.scroll(0, 0);
+  };
 
   useEffect(() => {
     if (window.location.search) {
@@ -49,32 +48,42 @@ const Home = () => {
           sort,
         }),
       );
+      isSearch.current = true;
     }
   }, []);
 
-  useEffect(() => {
-    const queryString = qs.stringify({
-      sort: sort.sortProperty,
-      categoryId,
-      currentPage,
-    });
+  const onChangeCategory = (i) => {
+    dispatch(setCategoryId(i));
+  };
 
-    navigate(`?${queryString}`);
+  const onChangePage = (number) => {
+    dispatch(setCurrentPage(number));
+  };
+
+  const pizzas = items
+    // .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase())) //фильтрация статики
+    .map((obj, i) => <PizzaBlock {...obj} key={i} />);
+  const sceletons = [...new Array(6)].map((_, index) => <Sceleton key={index} />); //генерация фэйкового массива пицц
+
+  useEffect(() => {
+    if (isMounted.current) {
+      const queryString = qs.stringify({
+        sort: sort.sortProperty,
+        categoryId,
+        currentPage,
+      });
+
+      navigate(`?${queryString}`);
+    }
+    isMounted.current = true;
   }, [category, sortBy, search, currentPage]);
 
   useEffect(() => {
-    setIsLoading(true);
-
-    axios
-      .get(
-        `https://813cecfc1deed960.mokky.dev/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}`,
-      )
-      .then((res) => {
-        setItems(res.data.items);
-        setIsLoading(false);
-      });
-
     window.scrollTo(0, 0);
+    if (!isSearch.current) {
+      getPizzas();
+    }
+    isSearch.current = false;
   }, [category, sortBy, search, currentPage]);
 
   return (
@@ -84,7 +93,14 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? sceletons : pizzas}</div>
+      {status === 'error' ? (
+        <div className="content__error-info">
+          <h2>Произошла ошибка 😕</h2>
+          <p> Не удалось загрузить пиццы. Попробуйте повторить попытку.</p>
+        </div>
+      ) : (
+        <div className="content__items">{status === 'loading' ? sceletons : pizzas}</div>
+      )}
       <Pagination onChangePage={onChangePage} currentPage={currentPage} />
     </div>
   );

@@ -22,7 +22,11 @@ const router = createBrowserRouter([
   },
   {
     path: 'cart',
-    element: <Cart />,
+    element: (
+      <Provider store={store}>
+        <Cart />
+      </Provider>
+    ),
   },
   {
     path: 'NotFound',
