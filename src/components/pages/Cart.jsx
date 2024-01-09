@@ -23,9 +23,9 @@ const Cart = () => {
 
   return (
     <div className="wrapper">
+      <Header />
       <div className="container container--cart">
         <div className="content">
-          {/* <Header /> */}
           <div class="cart">
             <div class="cart__top">
               <h2 class="content__title">

@@ -1,10 +1,12 @@
 import React from 'react';
 import cartEmpty from '.././assets/empty-cart.png';
 import { Link } from 'react-router-dom';
+import Header from './Header';
 
 const CartEmpty = () => {
   return (
     <div className="wrapper">
+      <Header />
       <div className="container container--cart">
         <div className="content">
           <div className="cart cart--empty">

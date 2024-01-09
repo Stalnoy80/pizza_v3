@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import qs from 'qs';
 import PizzaBlock from '../PizzaBlock/';
 import Sceleton from '../PizzaBlock/Sceleton';
 import Categories from '../Categories';
 import Sort, { list } from '../Sort';
 import Pagination from '../Pagination';
-import { SearchContext } from '../../App';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectFilter,
@@ -13,18 +12,16 @@ import {
   setCurrentPage,
   setFilters,
 } from '../../redux/slices/filterSlice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchPizzas, selectPizzaData } from '../../redux/slices/pizzaSlice';
 
 const Home = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { searchValue } = useContext(SearchContext);
   const isMounted = useRef(false);
 
-  const { categoryId, sort, currentPage } = useSelector(selectFilter);
+  const { categoryId, sort, currentPage, searchValue } = useSelector(selectFilter);
   const { items, status } = useSelector(selectPizzaData);
-
-  const dispatch = useDispatch();
 
   const isSearch = useRef(false);
 
@@ -62,7 +59,11 @@ const Home = () => {
 
   const pizzas = items
     // .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase())) //фильтрация статики
-    .map((obj, i) => <PizzaBlock {...obj} key={i} />);
+    .map((obj, i) => (
+      <Link key={i} to={`/FullPizza/${obj.id}`}>
+        <PizzaBlock {...obj} />
+      </Link>
+    ));
   const sceletons = [...new Array(6)].map((_, index) => <Sceleton key={index} />); //генерация фэйкового массива пицц
 
   useEffect(() => {

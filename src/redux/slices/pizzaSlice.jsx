@@ -12,8 +12,6 @@ export const fetchPizzas = createAsyncThunk('pizza/fetchPizzasStatus', async (pa
     `https://813cecfc1deed960.mokky.dev/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${search}`,
   );
 
-  console.log(thunkAPI);
-
   return data;
 });
 
@@ -27,21 +25,16 @@ export const pizzaSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPizzas.pending, (state) => {
-      console.log(fetchPizzas.pending.toString());
       state.items = [];
       state.status = 'loading';
     });
 
     builder.addCase(fetchPizzas.fulfilled, (state, action) => {
-      console.log(fetchPizzas.fulfilled.toString());
-
       state.items = action.payload.items;
       state.status = 'success';
     });
 
     builder.addCase(fetchPizzas.rejected, (state) => {
-      console.log(fetchPizzas.rejected.toString());
-
       state.status = 'error';
       state.items = [];
     });

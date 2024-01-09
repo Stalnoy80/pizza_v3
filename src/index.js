@@ -9,6 +9,7 @@ import { store } from './redux/store';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import NotFound from './components/NotFoundBlock/';
+import FullPizza from './components/pages/FullPizza';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,14 @@ const router = createBrowserRouter([
   {
     path: 'NotFound',
     element: <NotFound />,
+  },
+  {
+    path: 'FullPizza/:id',
+    element: (
+      <Provider store={store}>
+        <FullPizza />,
+      </Provider>
+    ),
   },
 ]);
 
