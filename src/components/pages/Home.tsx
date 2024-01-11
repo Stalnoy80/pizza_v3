@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import qs from 'qs';
-import PizzaBlock from '../PizzaBlock/';
+import PizzaBlock from '../PizzaBlock';
 import Sceleton from '../PizzaBlock/Sceleton';
 import Categories from '../Categories';
 import Sort, { list } from '../Sort';
@@ -15,7 +15,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchPizzas, selectPizzaData } from '../../redux/slices/pizzaSlice';
 
-const Home = () => {
+const Home: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isMounted = useRef(false);
@@ -30,6 +30,7 @@ const Home = () => {
   const search = searchValue ? `&title=*${searchValue}*` : '';
 
   const getPizzas = async () => {
+    //@ts-ignore
     dispatch(fetchPizzas({ sortBy, category, search, currentPage }));
     window.scroll(0, 0);
   };
@@ -49,18 +50,18 @@ const Home = () => {
     }
   }, []);
 
-  const onChangeCategory = (i) => {
-    dispatch(setCategoryId(i));
+  const onChangeCategory = (index: number) => {
+    dispatch(setCategoryId(index));
   };
 
-  const onChangePage = (number) => {
-    dispatch(setCurrentPage(number));
+  const onChangePage = (page: number) => {
+    dispatch(setCurrentPage(page));
   };
 
   const pizzas = items
     // .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase())) //фильтрация статики
-    .map((obj, i) => (
-      <Link key={i} to={`/FullPizza/${obj.id}`}>
+    .map((obj: any) => (
+      <Link key={obj.id} to={`/FullPizza/${obj.id}`}>
         <PizzaBlock {...obj} />
       </Link>
     ));
@@ -90,7 +91,7 @@ const Home = () => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories value={categoryId} onChangeCategory={(i) => onChangeCategory(i)} />
+        <Categories value={categoryId} onChangeCategory={onChangeCategory} />
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>

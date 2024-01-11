@@ -5,9 +5,9 @@ import { selectSort, setSort } from '../redux/slices/filterSlice';
 type SortItem = {
   name: string;
   sortProperty: string;
-}[];
+};
 
-export const list: SortItem = [
+export const list: SortItem[] = [
   { name: 'популярности(-)', sortProperty: '-rating' },
   { name: 'популярности(+)', sortProperty: 'rating' },
   { name: 'цене(-)', sortProperty: '-price' },
@@ -21,11 +21,11 @@ const Sort = () => {
   const sort = useSelector(selectSort);
   const dispatch = useDispatch();
 
-  const sortRef = useRef();
+  const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.composedPath().includes(sortRef.current)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
         setOpen(false);
       }
     };
@@ -34,8 +34,8 @@ const Sort = () => {
     return () => document.body.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const onClickSelectedItem = (i) => {
-    dispatch(setSort(i));
+  const onClickSelectedItem = (obj: SortItem) => {
+    dispatch(setSort(obj));
     setOpen(false);
   };
 

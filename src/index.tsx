@@ -18,7 +18,12 @@ const router = createBrowserRouter([
         <App />
       </Provider>
     ),
-    errorElement: <NotFound />,
+
+    errorElement: (
+      <Provider store={store}>
+        <NotFound />,
+      </Provider>
+    ),
   },
   {
     path: 'cart',
@@ -30,7 +35,11 @@ const router = createBrowserRouter([
   },
   {
     path: 'NotFound',
-    element: <NotFound />,
+    element: (
+      <Provider store={store}>
+        <NotFound />
+      </Provider>
+    ),
   },
   {
     path: 'FullPizza/:id',
