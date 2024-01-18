@@ -5,7 +5,7 @@ import Sceleton from '../PizzaBlock/Sceleton';
 import Categories from '../Categories';
 import Sort, { list } from '../Sort';
 import Pagination from '../Pagination';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   selectFilter,
   setCategoryId,
@@ -14,9 +14,10 @@ import {
 } from '../../redux/slices/filterSlice';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchPizzas, selectPizzaData } from '../../redux/slices/pizzaSlice';
+import { useAppDispatch } from '../../redux/store';
 
 const Home: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isMounted = useRef(false);
 
@@ -25,7 +26,7 @@ const Home: React.FC = () => {
 
   const isSearch = useRef(false);
 
-  const sortBy = sort.sortProperty;
+  const sortBy = sort.sortProperty.replace('', '');
   const category = categoryId > 0 ? `category=${categoryId}` : '';
   const search = searchValue ? `&title=*${searchValue}*` : '';
 
@@ -38,8 +39,9 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
-      const sort = list.find((obj) => obj.sortProperty === params.sort);
-
+      const sort = list?.find((obj) => obj?.sortProperty === params.sortBy) ?? [];
+      console.log(sort);
+      console.log(list);
       dispatch(
         setFilters({
           ...params,
