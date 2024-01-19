@@ -3,17 +3,18 @@ import qs from 'qs';
 import PizzaBlock from '../PizzaBlock';
 import Sceleton from '../PizzaBlock/Sceleton';
 import Categories from '../Categories';
-import Sort, { list } from '../Sort';
+import SortPopup, { list } from '../Sort';
 import Pagination from '../Pagination';
 import { useSelector } from 'react-redux';
 import {
+  FilterSliceState,
   selectFilter,
   setCategoryId,
   setCurrentPage,
   setFilters,
 } from '../../redux/slices/filterSlice';
 import { Link, useNavigate } from 'react-router-dom';
-import { fetchPizzas, selectPizzaData } from '../../redux/slices/pizzaSlice';
+import { SearchPizzaParams, fetchPizzas, selectPizzaData } from '../../redux/slices/pizzaSlice';
 import { useAppDispatch } from '../../redux/store';
 
 const Home: React.FC = () => {
@@ -32,20 +33,21 @@ const Home: React.FC = () => {
 
   const getPizzas = async () => {
     //@ts-ignore
-    dispatch(fetchPizzas({ sortBy, category, search, currentPage }));
+    dispatch(fetchPizzas({ sortBy, category, search, currentPage: String(currentPage) }));
     window.scroll(0, 0);
   };
 
   useEffect(() => {
     if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
-      const sort = list?.find((obj) => obj?.sortProperty === params.sortBy) ?? [];
-      console.log(sort);
-      console.log(list);
+      const params = qs.parse(window.location.search.substring(1)) as unknown as SearchPizzaParams;
+      const sort = list.find((obj) => obj.sortProperty === params.sortBy);
+
       dispatch(
         setFilters({
-          ...params,
-          sort,
+          searchValue: params.search,
+          categoryId: Number(params.category),
+          currentPage: Number(params.currentPage),
+          sort: sort || list[0],
         }),
       );
       isSearch.current = true;
@@ -62,11 +64,7 @@ const Home: React.FC = () => {
 
   const pizzas = items
     // .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase())) //фильтрация статики
-    .map((obj: any) => (
-      <Link key={obj.id} to={`/FullPizza/${obj.id}`}>
-        <PizzaBlock {...obj} />
-      </Link>
-    ));
+    .map((obj: any) => <PizzaBlock {...obj} />);
   const sceletons = [...new Array(6)].map((_, index) => <Sceleton key={index} />); //генерация фэйкового массива пицц
 
   useEffect(() => {
@@ -94,7 +92,7 @@ const Home: React.FC = () => {
     <div className="container">
       <div className="content__top">
         <Categories value={categoryId} onChangeCategory={onChangeCategory} />
-        <Sort />
+        <SortPopup />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (

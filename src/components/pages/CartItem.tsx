@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { addItem, minusItems, removeItem } from '../../redux/slices/cartSlice';
+import clsx from 'clsx';
 
 type CartItemProps = {
   id: number;
@@ -12,7 +13,15 @@ type CartItemProps = {
   imageUrl: string;
 };
 
-const CartItem: React.FC<CartItemProps> = ({ id, title, price, size, type, count, imageUrl }) => {
+const CartItemBlock: React.FC<CartItemProps> = ({
+  id,
+  title,
+  price,
+  size,
+  type,
+  count,
+  imageUrl,
+}) => {
   const dispatch = useDispatch();
   const onClickPlus = () => {
     dispatch(addItem({ id, title, price, size, type, count, imageUrl }));
@@ -38,9 +47,12 @@ const CartItem: React.FC<CartItemProps> = ({ id, title, price, size, type, count
         </p>
       </div>
       <div className="cart__item-count">
-        <div
+        <button
+          disabled={count <= 1}
           onClick={onClickMinus}
-          className="button button--outline button--circle cart__item-count-minus">
+          className={clsx('button button--outline button--circle cart__item-count-minus', {
+            'cart__item-count-minus--disabled': count === 1,
+          })}>
           <svg
             width="10"
             height="10"
@@ -56,9 +68,9 @@ const CartItem: React.FC<CartItemProps> = ({ id, title, price, size, type, count
               fill="#EB5A1E"
             />
           </svg>
-        </div>
+        </button>
         <b>{count}</b>
-        <div
+        <button
           onClick={onClickPlus}
           className="button button--outline button--circle cart__item-count-plus">
           <svg
@@ -76,7 +88,7 @@ const CartItem: React.FC<CartItemProps> = ({ id, title, price, size, type, count
               fill="#EB5A1E"
             />
           </svg>
-        </div>
+        </button>
       </div>
       <div className="cart__item-price">
         <b>{price * count} ₽</b>
@@ -104,4 +116,4 @@ const CartItem: React.FC<CartItemProps> = ({ id, title, price, size, type, count
   );
 };
 
-export default CartItem;
+export default CartItemBlock;
