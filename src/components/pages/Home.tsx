@@ -7,13 +7,12 @@ import SortPopup, { list } from '../Sort';
 import Pagination from '../Pagination';
 import { useSelector } from 'react-redux';
 import {
-  FilterSliceState,
   selectFilter,
   setCategoryId,
   setCurrentPage,
   setFilters,
 } from '../../redux/slices/filterSlice';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { SearchPizzaParams, fetchPizzas, selectPizzaData } from '../../redux/slices/pizzaSlice';
 import { useAppDispatch } from '../../redux/store';
 
@@ -54,17 +53,17 @@ const Home: React.FC = () => {
     }
   }, []);
 
-  const onChangeCategory = (index: number) => {
+  const onChangeCategory = React.useCallback((index: number) => {
     dispatch(setCategoryId(index));
-  };
+  }, []);
 
-  const onChangePage = (page: number) => {
+  const onChangePage = React.useCallback((page: number) => {
     dispatch(setCurrentPage(page));
-  };
+  }, []);
 
   const pizzas = items
     // .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase())) //фильтрация статики
-    .map((obj: any) => <PizzaBlock {...obj} />);
+    .map((obj: any) => <PizzaBlock key={obj.id} {...obj} />);
   const sceletons = [...new Array(6)].map((_, index) => <Sceleton key={index} />); //генерация фэйкового массива пицц
 
   useEffect(() => {
@@ -92,7 +91,7 @@ const Home: React.FC = () => {
     <div className="container">
       <div className="content__top">
         <Categories value={categoryId} onChangeCategory={onChangeCategory} />
-        <SortPopup />
+        <SortPopup value={sort} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (

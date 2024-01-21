@@ -13,41 +13,21 @@ import FullPizza from './components/pages/FullPizza';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <Provider store={store}>
-        <App />
-      </Provider>
-    ),
+    element: <App />,
 
-    errorElement: (
-      <Provider store={store}>
-        <NotFound />,
-      </Provider>
-    ),
+    errorElement: <NotFound />,
   },
   {
     path: 'cart',
-    element: (
-      <Provider store={store}>
-        <Cart />
-      </Provider>
-    ),
+    element: <Cart />,
   },
   {
     path: 'NotFound',
-    element: (
-      <Provider store={store}>
-        <NotFound />
-      </Provider>
-    ),
+    element: <NotFound />,
   },
   {
     path: 'FullPizza/:id',
-    element: (
-      <Provider store={store}>
-        <FullPizza />,
-      </Provider>
-    ),
+    element: <FullPizza />,
   },
 ]);
 
@@ -55,5 +35,10 @@ const rootElem = document.getElementById('root');
 
 if (rootElem) {
   const root = ReactDOM.createRoot(rootElem);
-  root.render(<RouterProvider router={router} />);
+
+  root.render(
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>,
+  );
 }
