@@ -52,9 +52,9 @@ export const filterSlice = createSlice({
     },
   },
 });
-export const selectFilter = (state: RootState) => state.filter;
+export const selectFilter = (state: RootState) => state.persistedReducerFilter;
 
-export const selectSort = (state: RootState) => state.filter.sort;
+export const selectSort = (state: RootState) => state.persistedReducerFilter.sort;
 // Action creators are generated for each case reducer function
 export const { setCategoryId, setSort, setCurrentPage, setFilters, setSearchValue } =
   filterSlice.actions;

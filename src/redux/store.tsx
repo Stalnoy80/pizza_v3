@@ -7,14 +7,22 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 
-const persistConfig = {
-  key: 'root',
+const persistConfigPizza = {
+  key: 'pizza',
+  storage,
+};
+const persistConfigCart = {
+  key: 'cart',
+  storage,
+};
+const persistConfigFilter = {
+  key: 'filter',
   storage,
 };
 
-const persistedReducerPizza = persistReducer(persistConfig, pizza);
-const persistedReducerCart = persistReducer(persistConfig, cart);
-const persistedReducerFilter = persistReducer(persistConfig, filter);
+const persistedReducerPizza = persistReducer(persistConfigPizza, pizza);
+const persistedReducerCart = persistReducer(persistConfigCart, cart);
+const persistedReducerFilter = persistReducer(persistConfigFilter, filter);
 
 export const store = configureStore({
   reducer: { persistedReducerPizza, persistedReducerCart, persistedReducerFilter },

@@ -4,11 +4,12 @@ import App from './App';
 import Cart from './components/pages/Cart';
 
 import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { persistor, store } from './redux/store';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import NotFound from './components/NotFoundBlock';
 import FullPizza from './components/pages/FullPizza';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const router = createBrowserRouter([
   {
@@ -38,7 +39,9 @@ if (rootElem) {
 
   root.render(
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
     </Provider>,
   );
 }
