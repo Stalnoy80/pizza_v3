@@ -1,34 +1,55 @@
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import Cart from './components/pages/Cart';
 
 import { Provider } from 'react-redux';
 import { persistor, store } from './redux/store';
-
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import NotFound from './components/NotFoundBlock';
-import FullPizza from './components/pages/FullPizza';
 import { PersistGate } from 'redux-persist/integration/react';
+import React from 'react';
+
+const Cart = React.lazy(() => import(/* webpackChunkName: "Cart" */ './components/pages/Cart'));
+const NotFound = React.lazy(
+  () => import(/* webpackChunkName: "NotFound" */ './components/pages/NotFound'),
+);
+const FullPizza = React.lazy(
+  () => import(/* webpackChunkName: "FullPizza" */ './components/pages/FullPizza'),
+);
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
 
-    errorElement: <NotFound />,
+    errorElement: (
+      <React.Suspense fallback={<div>Загрузка ...</div>}>
+        <NotFound />{' '}
+      </React.Suspense>
+    ),
   },
   {
     path: 'cart',
-    element: <Cart />,
+    element: (
+      <React.Suspense fallback={<div>Загрузка корзины...</div>}>
+        <Cart />
+      </React.Suspense>
+    ),
   },
   {
     path: 'NotFound',
-    element: <NotFound />,
+    element: (
+      <React.Suspense fallback={<div>Загрузка ...</div>}>
+        <NotFound />
+      </React.Suspense>
+    ),
   },
   {
     path: 'FullPizza/:id',
-    element: <FullPizza />,
+    element: (
+      <React.Suspense fallback={<div>Загрузка ...</div>}>
+        <FullPizza />
+      </React.Suspense>
+    ),
   },
 ]);
 
